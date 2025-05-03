@@ -1,0 +1,40 @@
+<% if(user){%>
+<h1>
+  Welcome,<%=user.username %>!</h1> <%} %>
+  <h1>All Posts</h1>
+
+  <% if(user){%>
+  <h3>Create a new post</h3>
+  <form action="/posts" method="POST">
+    <textarea name="content" rows="4" required></textarea>
+    <input type="hidden" name="author" value="<%=user.username %>" />
+    <button type="submit">Post</button>
+  </form>
+  <%} %>
+
+  <div class="posts-list">
+    <% posts.forEach(post=>{%>
+    <div class="post">
+      <div class="post-meta">
+        Posted by <strong><%= post.username %></strong>  on <%= post.createdAt.toLocaleString()%></div>
+      <div class="post-content"><%= post.content %></div>
+    </div>
+    <% }); %>
+  </div>
+</h1>
+
+<div class="chat-container">
+  <h3>Chat Room</h3>
+  <div class="online-users">
+    Online users: <span id="users-list">0</span>
+  </div>
+  <div id="messages">
+     <form id="chat-form">
+       <input type="text" id="message-input" placeholder="Type your message...">
+       <button type="submit">Send</button>
+     </form>
+  </div>
+
+</div>
+
+<script src="/js/chat.js"></script>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <h2>Register</h2>
+    <form id="registerForm">
+      <input
+        type="text"
+        id="registerName"
+        placeholder="username to register"
+        required
+      />
+      <input
+        type="password"
+        placeholder="password to register"
+        id="registerPass"
+        required
+      />
+      <button type="submit">Register</button>
+    </form>
+    <script>
+      document
+        .getElementById("registerForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const username = document.getElementById("registerName").value;
+          const password = document.getElementById("registerPass").value;
+
+          const response = await fetch("http://localhost:8080/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+          });
+          const data = await response.json();
+          alert(data.msg);
+          console.log(data);
+        });
+    </script>
+  </body>
+</html>

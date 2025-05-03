@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <table>
+      <thead>
+        <th>id</th>
+        <th>name</th>
+        <th>color</th>
+        <th>type</th>
+        <th>actions</th>
+      </thead>
+      <tbody id="carstable"></tbody>
+    </table>
+
+    <h1>add car</h1>
+    id <input type="text" id="carId" /><br />
+    name <input type="text" id="carName" /><br />
+    color <input type="text" id="carColor" /><br />
+    type <input type="text" id="carType" /><br />
+    <button onclick="addCar()">add</button>
+
+    <script>
+      async function loadCars() {
+        let res = await fetch("/cars");
+        let data = await res.json();
+        let carsHtml = data
+          .map(
+            (x) => `<tr>
+            <td>${x.id}</td>
+                <td>${x.name}</td>
+                <td>${x.color}</td>
+                <td>${x.type}</td>
+                <td><button onclick="deleteCar('${x.id}')">delete</button></td>
+                <td><button onclick="editCar('${x.id}')">edit</button></td>
+                </tr>`
+          )
+          .join("");
+
+        document.getElementById("carstable").innerHTML = carsHtml;
+      }
+      loadCars();
+      async function addCar() {
+        let id = document.getElementById("carId").value;
+        let name = document.getElementById("carName").value;
+        let color = document.getElementById("carColor").value;
+        let type = document.getElementById("carType").value;
+
+        let body = { id, name, color, type };
+        let res = await fetch("/addcar", {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
+        let resbody = await res.json();
+        loadCars();
+        alert(resbody.msg);
+      }
+
+      async function deleteCar(id) {
+        const res = await fetch("/deletecar?id=" + id);
+        const responseBody = await res.json();
+        loadCars();
+        alert(responseBody.msg);
+      }
+      async function editCar(id) {
+        let name = document.getElementById("carName").value;
+        let color = document.getElementById("carColor").value;
+        let type = document.getElementById("carType").value;
+        let body = { id, name, color, type };
+
+        const res = await fetch("/editcar?id=" + id, {
+          method: "POST",
+          headers: {
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(body),
+        });
+        let resbody = await res.json();
+        loadCars();
+        alert(resbody.msg);
+      }
+    </script>
+  </body>
+</html>
